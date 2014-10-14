@@ -1,7 +1,7 @@
-trello-github-integration
-=========================
+Midefa
+======
 
-A cool app to link Trello with GitHub in order to sync cards with issues
+MiCorr Development Fairy is a cool app to link Trello with GitHub in order to sync cards with issues
 
 This app uses two python libraries to interface Trello and GitHub's API:
 * https://github.com/jacquev6/PyGithub

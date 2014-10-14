@@ -4,11 +4,16 @@ from django.contrib import admin
 # Third-party app imports
 
 # Gelato imports
-from .models import Project, TrelloBoard, TrelloList, TrelloCard, TrelloCheckList, TrelloCheckListItem, TrelloMember
+from .models import Project, Sprint, TrelloBoard, TrelloList, TrelloCard, TrelloCheckList, TrelloCheckListItem, TrelloMember
 
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Sprint)
+class SprintAdmin(admin.ModelAdmin):
     pass
 
 

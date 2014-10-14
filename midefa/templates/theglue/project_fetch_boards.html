@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block project %}{{ object.name }} >{% endblock project %}
+
+{% block title %}Fetch boards{% endblock title %}
+
+{% block content %}
+    <h1>Fetch boards for {{ object.name }}</h1>
+    <table>
+        <tr>
+            <th>Board's name</th>
+            <th>Trello ID</th>
+            <th>Closed</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+        {% for fetch_board in object_list %}
+            <tr>
+                <td>{{ fetch_board.board.name }}</td>
+                <td>{{ fetch_board.board.board_id }}</td>
+                <td>{{ fetch_board.board.closed }}</td>
+                <td>{{ fetch_board.created }}</td>
+                <td><a href="{% url 'project_link_board' object.id fetch_board.board.id %}">Link</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

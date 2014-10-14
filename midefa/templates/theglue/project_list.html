@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Project's list{% endblock title %}
+
+{% block content %}
+    <h1>Project's list</h1>
+    <table>
+        <tr>
+            <th>Project's name</th>
+            <th>Trello user</th>
+        </tr>
+        {% for project in object_list %}
+            <tr>
+                <td><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></td>
+                <td>{{ project.trello_user }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block project %}{{ object.name }} >{% endblock project %}
+
+{% block title %}Project's summary{% endblock title %}
+
+{% block content %}
+    <h1>{{ object.name }} project's summary</h1>
+    <dl>
+        <dt>Project</dt><dd>{{ object.name }}</dd>
+        <dt>Trello API</dt><dd>{{ object.trello_api_key }}</dd>
+        <dt>Trello username</dt><dd>{{ object.trello_user }}</dd>
+        <dt>Board</dt>
+        <dd>{% if not object.board %}<a href="{% url 'project_fetch_boards' object.id %}">Fetch boards</a>
+            {% else %}{{ object.board }} (<a href="{% url 'project_fetch_boards' object.id %}">change</a>)
+            {% endif %}</dd>
+        <dt>Next sprint #</dt><dd>{{ object.sprint_name }} {{ object.sprint_counter }}</dd>
+    </dl>
+
+    <table>
+        <tr>
+            <th>List</th>
+            <th>Watch</th>
+            <th>Usage</th>
+        </tr>
+        {% for list in object.board.lists.all %}
+            <tr>
+                <td>{{ list.name }}</td>
+                <td>{{ list.watch }}</td>
+                <td></td>
+            </tr>
+            {% for card in list.cards.all %}
+                <tr>
+                    <td></td>
+                    <td colspan="2">{{ card }}{% if card.recent_status %} <i>HOT</i>{% endif %}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+    <ul>
+        <li><a href="{% url 'project_fetch_lists' object.id %}">Refresh lists</a></li>
+        <li><a href="{% url 'project_fetch_all_cards' object.id %}">Fetch cards</a></li>
+    </ul>
+{% endblock content %}
