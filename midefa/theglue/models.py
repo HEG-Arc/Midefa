@@ -1,9 +1,23 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from midefa.settings import TIME_ZONE
+import datetime
+from pytz import timezone
 
 
 class Project(models.Model):
+    NONE = 'none'
+    VCS = 'vcs'
+    SPRINT = 'sprint'
+    REQUIREMENT = 'requirement'
+    BLOCKING = 'blocking'
+    LABEL_USAGE_CHOICES = (
+        (VCS, _('VCS')),
+        (SPRINT, _('Sprint planning meeting')),
+        (REQUIREMENT, _('Need requirements')),
+        (BLOCKING, _('Blocking!')),
+        (NONE, _('None')),
+    )
     name = models.CharField(verbose_name=_("name"), max_length=50, help_text=_("The project's name"))
     trello_api_key = models.CharField(verbose_name=_("trello's api key"), max_length=200, help_text=_("The Trello developer API key"))
     trello_api_secret = models.CharField(verbose_name=_("trello's secret key"), max_length=200, help_text=_("The Trello secret key"))
@@ -12,6 +26,18 @@ class Project(models.Model):
     board = models.OneToOneField('TrelloBoard', verbose_name=_('board'), blank=True, null=True, help_text=_("The Trello board used in this project"))
     sprint_name = models.CharField(verbose_name=_("sprint name"), max_length=50, help_text=_("String used to concatenate the sprint name"))
     sprint_counter = models.IntegerField(verbose_name=_("sprint counter"), default=0, help_text=_("The counter used to increment sprint number"))
+    label_purple = models.CharField(verbose_name=_("purple label name"), max_length=100, blank=True, help_text=_("The name of the purple label"))
+    label_green = models.CharField(verbose_name=_("green label name"), max_length=100, blank=True, help_text=_("The name of the green label"))
+    label_orange = models.CharField(verbose_name=_("orange label name"), max_length=100, blank=True, help_text=_("The name of the orange label"))
+    label_red = models.CharField(verbose_name=_("red label name"), max_length=100, blank=True, help_text=_("The name of the red label"))
+    label_blue = models.CharField(verbose_name=_("blue label name"), max_length=100, blank=True, help_text=_("The name of the blue label"))
+    label_yellow = models.CharField(verbose_name=_("yellow label name"), max_length=100, blank=True, help_text=_("The name of the yellow label"))
+    label_purple_usage = models.CharField(verbose_name=_("purple label usage"), max_length=50, choices=LABEL_USAGE_CHOICES, default=NONE, help_text=_("The usage of the purple label"))
+    label_green_usage = models.CharField(verbose_name=_("green label usage"), max_length=50, choices=LABEL_USAGE_CHOICES, default=NONE, help_text=_("The usage of the green label"))
+    label_orange_usage = models.CharField(verbose_name=_("orange label usage"), max_length=50, choices=LABEL_USAGE_CHOICES, default=NONE, help_text=_("The usage of the orange label"))
+    label_red_usage = models.CharField(verbose_name=_("red label usage"), max_length=50, choices=LABEL_USAGE_CHOICES, default=NONE, help_text=_("The usage of the red label"))
+    label_blue_usage = models.CharField(verbose_name=_("blue label usage"), max_length=50, choices=LABEL_USAGE_CHOICES, default=NONE, help_text=_("The usage of the blue label"))
+    label_yellow_usage = models.CharField(verbose_name=_("yellow label usage"), max_length=50, choices=LABEL_USAGE_CHOICES, default=NONE, help_text=_("The usage of the yellow label"))
 
     class Meta:
         verbose_name = _('midefa project')
@@ -84,6 +110,12 @@ class TrelloCard(models.Model):
     id_short = models.IntegerField(verbose_name=_("short id"), default=0, max_length=8, help_text=_("The Trello card short id"))
     name = models.CharField(verbose_name=_("name"), max_length=100, help_text=_("The Trello card name"))
     short_url = models.URLField(verbose_name=_("short url"), max_length=200, blank=True, null=True, help_text=_("The Trello card short url"))
+    label_green = models.BooleanField(verbose_name=_("green label"), default=False, help_text=_("The usage of the green label on this card"))
+    label_yellow = models.BooleanField(verbose_name=_("yellow label"), default=False, help_text=_("The usage of the yellow label on this card"))
+    label_orange = models.BooleanField(verbose_name=_("orange label"), default=False, help_text=_("The usage of the orange label on this card"))
+    label_red = models.BooleanField(verbose_name=_("red label"), default=False, help_text=_("The usage of the red label on this card"))
+    label_purple = models.BooleanField(verbose_name=_("purple label"), default=False, help_text=_("The usage of the purple label on this card"))
+    label_blue = models.BooleanField(verbose_name=_("blue label"), default=False, help_text=_("The usage of the blue label on this card"))
     last_activity = models.DateTimeField(verbose_name=_("last activity"), auto_now_add=True, help_text=_("Timestamp of the last change on Trello"))
 
     class Meta:
@@ -92,9 +124,7 @@ class TrelloCard(models.Model):
         ordering = ['id_short']
 
     def recent_status(self):
-        "Returns the person's baby-boomer status."
-        import datetime
-        from pytz import timezone
+        """Returns True if the last activity is less than 7 days old."""
         if self.last_activity > datetime.datetime.now(timezone(TIME_ZONE))-datetime.timedelta(days=7):
             return True
         else:

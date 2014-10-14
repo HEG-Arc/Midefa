@@ -49,9 +49,14 @@ def get_boards(project):
     return boards
 
 
-def get_lists(project):
+def get_board(project):
     client = create_client_token(project)
     board = Board(client, project.board.board_id)
+    return board
+
+
+def get_lists(project):
+    board = get_board(project)
     lists = board.get_lists()
     return lists
 
@@ -98,5 +103,45 @@ def fetch_all_cards(project):
                 obj.id_short = card_information['idShort']
                 obj.short_url = card_information['shortUrl']
                 obj.last_activity = card_information['dateLastActivity']
+                labels = []
+                for label in card_information['labels']:
+                    labels.append(label['color'])
+                if 'green' in labels:
+                    obj.label_green = True
+                else:
+                    obj.label_green = False
+                if 'yellow' in labels:
+                    obj.label_yellow = True
+                else:
+                    obj.label_yellow = False
+                if 'orange' in labels:
+                    obj.label_orange = True
+                else:
+                    obj.label_orange = False
+                if 'red' in labels:
+                    obj.label_red = True
+                else:
+                    obj.label_red = False
+                if 'purple' in labels:
+                    obj.label_purple = True
+                else:
+                    obj.label_purple = False
+                if 'blue' in labels:
+                    obj.label_blue = True
+                else:
+                    obj.label_blue = False
                 obj.save()
+    return True
+
+
+def fetch_labels(project):
+    board = get_board(project)
+    labels = board.get_board_information()['labelNames']
+    project.label_blue = labels['blue']
+    project.label_green = labels['green']
+    project.label_orange = labels['orange']
+    project.label_purple = labels['purple']
+    project.label_red = labels['red']
+    project.label_yellow = labels['yellow']
+    project.save()
     return True

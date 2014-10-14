@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView, RedirectView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from .models import Project, TrelloBoard
-from .utils import fetch_boards, fetch_lists, fetch_all_cards
+from .utils import fetch_boards, fetch_lists, fetch_all_cards, fetch_labels
 
 
 class ProjectList(ListView):
@@ -45,6 +45,16 @@ class ProjectFetchAllCards(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs['pk'])
         fetch_all_cards(project)
+        return reverse('project_detail', kwargs={'pk': project.id})
+
+
+class ProjectFetchLabels(RedirectView):
+
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs['pk'])
+        fetch_labels(project)
         return reverse('project_detail', kwargs={'pk': project.id})
 
 
