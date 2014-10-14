@@ -1,0 +1,16 @@
+{% load sitetree %}
+<ul class="nav nav-list">
+    {% for item in sitetree_items %}
+        <li class="{% if item.is_current or item.in_current_branch %}active open{% endif %}">
+            <a href="{% if item.has_children %}#{% else %}{% sitetree_url for item %}{% endif %}" {% if item.has_children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}>
+                {% if item.css_class %}<i class="menu-icon fa {{ item.css_class }}"></i>{% endif %}
+                <span class="menu-text"> {{ item.title_resolved }} </span>
+                {% if item.has_children %}<b class="arrow fa fa-angle-down"></b>{% endif %}
+            </a>
+            <b class="arrow"></b>
+            {% if item.has_children %}
+                {% sitetree_children of item for menu template "sitetree/menu_dropdown.html" %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

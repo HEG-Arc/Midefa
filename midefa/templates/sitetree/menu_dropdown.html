@@ -1,0 +1,12 @@
+{% load sitetree %}
+<ul class="submenu">
+    {% for item in sitetree_items %}
+        <li {% if item.is_current %}class="active"{% endif %}>
+            <a href="{% sitetree_url for item %}" {% if item.hint %}title="{{ item.hint }}"{% endif %}>
+                <i class="menu-icon fa fa-caret-right"></i>
+                {{ item.title_resolved }}
+            </a>
+            <b class="arrow"></b>
+        </li>
+    {% endfor %}
+</ul>

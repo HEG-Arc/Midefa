@@ -23,6 +23,7 @@ class ProjectFetchBoards(TemplateView):
         context = super(ProjectFetchBoards, self).get_context_data(**kwargs)
         project = get_object_or_404(Project, pk=kwargs['pk'])
         context['object'] = project
+        context['project'] = project
         boards = fetch_boards(project)
         context['object_list'] = boards
         return context

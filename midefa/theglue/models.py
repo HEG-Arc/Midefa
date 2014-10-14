@@ -48,28 +48,6 @@ class Project(models.Model):
         return "%s" % (self.name,)
 
 
-class Sprint(models.Model):
-    project = models.ForeignKey('Project', verbose_name=_('project'), related_name=_('sprints'), help_text=_("Project the sprint belongs to"))
-    sprint_number = models.IntegerField(verbose_name=_("sprint number"), default=0, help_text=_("The number of the sprint (incremented with project.sprint_counter"))
-    sprint_date = models.DateTimeField(verbose_name=_("sprint date"), blank=True, null=True, help_text=_("The date of the sprint"))
-    due_date = models.DateTimeField(verbose_name=_("sprint due date"), blank=True, null=True, help_text=_("The due date of the sprint"))
-
-    class Meta:
-        verbose_name = _('project sprint')
-        verbose_name_plural = _('project sprints')
-        ordering = ['sprint_number']
-
-    def save(self, *args, **kwargs):
-        if not self.sprint_number:
-            self.sprint_number = self.project.sprint_counter
-            self.project.sprint_counter += 1
-            self.project.save()
-        super(Sprint, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return "%s %s" % (self.project.sprint_name, self.sprint_number,)
-
-
 class TrelloBoard(models.Model):
     project_origin = models.ForeignKey('Project', verbose_name=_('project'), related_name=_('boards'), help_text=_("Project the board belongs to"))
     board_id = models.CharField(verbose_name=_("board id"), max_length=100, help_text=_("The Trello board id"))
@@ -125,7 +103,7 @@ class TrelloCard(models.Model):
 
     def recent_status(self):
         """Returns True if the last activity is less than 7 days old."""
-        if self.last_activity > datetime.datetime.now(timezone(TIME_ZONE))-datetime.timedelta(days=7):
+        if self.last_activity > datetime.datetime.now(timezone(TIME_ZONE))-datetime.timedelta(days=4):
             return True
         else:
             return False

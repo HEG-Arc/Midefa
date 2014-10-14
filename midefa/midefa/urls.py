@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.core.urlresolvers import reverse_lazy
 
 from theglue.views import ProjectList, ProjectDetail, ProjectFetchBoards, ProjectLinkBoard, ProjectFetchLists, ProjectFetchAllCards, ProjectFetchLabels
 
@@ -14,5 +15,7 @@ urlpatterns = patterns('',
     url(r'^project/(?P<pk>\d+)/fetch/all-cards$', ProjectFetchAllCards.as_view(), name='project_fetch_all_cards',),
     url(r'^project/(?P<pk>\d+)/$', ProjectDetail.as_view(), name='project_detail',),
     url(r'^projects/$', ProjectList.as_view(), name='projects',),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': reverse_lazy('login')}, name='logout'),
     url(r'^admin/', include(admin.site.urls)),
 )

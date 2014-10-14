@@ -2,3 +2,4 @@ Django==1.7
 Trolly==0.2.1
 httplib2==0.9
 pytz
+django-sitetree==1.2.0
